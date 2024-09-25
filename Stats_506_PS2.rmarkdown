@@ -7,6 +7,7 @@ format:
 editor: visual
 ---
 
+
 ## Github Link
 
 <https://github.com/nynn7747/Stats_506_PS2>
@@ -14,6 +15,7 @@ editor: visual
 ## Problem 1
 
 ### a. Four versions of play_dice
+
 
 ```{r}
 #| code-fold: true
@@ -112,7 +114,9 @@ play_dice4(10)
 play_dice4(10)
 ```
 
+
 ### b & c. Demonstrate that all versions work and that the four versions give the same result. Do so by running each a few times, once with an input a 3, and once with an input of 3,000.
+
 
 ```{r}
 #| code-fold: true
@@ -130,9 +134,11 @@ print("Result from Version 4")
 sapply(c(3, 3000), play_dice4)
 ```
 
+
 ### d. Use the *microbenchmark* package to clearly demonstrate the speed of the implementations. Compare performance with a low input (1,000) and a large input (100,000). Discuss the results
 
 **According to the output of microbenchmark function, Version 2 using vectorization is faster than other methods. Loop-based version 1 is the slowest although this is easier to understand. Apply and table functions in version 3 and 4 have a performance between vectorization and loop. In our actual work, vectorization should be preferred.**
+
 
 ```{r}
 #| code-fold: true
@@ -150,6 +156,7 @@ microbenchmark("Version 1" = play_dice1(100000),
 
 ```
 
+
 ### e. Do you think this is a fair game? Defend your decision with evidence based upon a Monte Carlo simulation.
 
 **I don't think this is a fair game based on the expected value and Monte Carlo simulations. This game is not in favor of the player based on the negative values in the expected value and the simulation result.**
@@ -164,6 +171,7 @@ $E(x) = -\frac{2x}{3} < 0$
 
 **With Monte Carlo simulation, based on 1000 times simulations, no matter we have 10, 100, or 1000 rolls, the winnings are less than 0.**
 
+
 ```{r}
 #| code-fold: true
 sim_n <- 1000
@@ -175,11 +183,13 @@ sim_m <- matrix(sapply(rolls, function(r) replicate(sim_n, play_dice2(r)))
 apply(sim_m, 2, mean)
 ```
 
+
 ### 
 
 ## Problem 2 **- Linear Regression**
 
 ### a. The names of the variables in this data are way too long. Rename the columns of the data to more reasonable lengths.
+
 
 ```{r}
 #| code-fold: true
@@ -193,7 +203,9 @@ length(new_names)
 names(cars) <- new_names
 ```
 
+
 ### b. Restrict the data to cars whose Fuel Type is “Gasoline”.
+
 
 ```{r}
 #| code-fold: true
@@ -201,9 +213,11 @@ cars_gas <- cars[cars$Fuel_Type == "Gasoline", ]
 dim(cars_gas)
 ```
 
+
 ### c. Examine the distribution of highway gas mileage. Consider whether a transformation could be used. If so, generate the transformed variable and *use this variable going forward*. If not, provide a short justification.
 
 **Highway gas mileage has a right-skewed distribution. Therefore, a log transformation would be helpful to data analysis.**
+
 
 ```{r}
 #| code-fold: true
@@ -217,6 +231,7 @@ hist(cars_gas$log_Highway_mpg)
 summary(cars_gas$log_Highway_mpg)
 ```
 
+
 ### d. Fit a linear regression model predicting MPG on the highway. The predictor of interest is torque. Control for:
 
 -   The horsepower of the engine
@@ -229,6 +244,7 @@ Briefly discuss the estimated relationship between torque and highway MPG. Be pr
 
 **The estimated coefficient for torque is -0.0023 with a significant *p*-value. This means that for every one-unit increase in torque, the log of highway miles per gallon decrease by 0.0023 units, after controlling for horsepower, dimensions (height, length, width), and the year of release. Therefore, cars with higher torque generally have lower fuel efficiency on highways.**
 
+
 ```{r}
 #| code-fold: true
 library(tidyverse)
@@ -239,11 +255,13 @@ head(model.frame(form1, data = cars_gas))
 summary(lm(form1, data = cars_gas))
 ```
 
+
 ### e. It seems reasonable that there may be an interaction between torque and horsepower. Refit the model (with `lm`) and generate an interaction plot, showing how the relationship between torque and MPG changes as horsepower changes. Choose reasonable values of torque, and show lines for three different reasonable values of horsepower.
 
 (Hint: If you choose to use the *interactions* package for this, look at the `at =` argument to help with how year comes into play - choose a reasonable single value for year.
 
 **The interaction coefficient for Torque:Horsepower is 3.939e-06. This means that the association between torque and highway MPG is related to horsepower. For every additional unit of horsepower, the negative impact of torque on log value of highway MPG decreases by 3.939e-06 units.**
+
 
 ```{r}
 #| code-fold: true
@@ -266,7 +284,9 @@ emmip(model2, Horsepower ~ Torque, at = list(Torque = torque_vals, Horsepower = 
 
 ```
 
+
 ### f. Calculate β\^ from d. manually (without using `lm`) by first creating a proper design matrix, then using matrix algebra to estimate β. Confirm that you get the same result as `lm` did prior.
+
 
 ```{r}
 #| code-fold: true
@@ -289,3 +309,4 @@ print(beta_hat)
 all.equal(coefficients(mod), beta_hat[, 1])
 
 ```
+
